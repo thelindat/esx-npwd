@@ -1,0 +1,1 @@
+A WIP compatability wrapper resource for ESX + NPWD
