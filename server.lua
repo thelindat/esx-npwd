@@ -19,16 +19,15 @@ local function getUniquePhoneNumber(xPlayer)
 end
 
 AddEventHandler('esx:playerLoaded', function(playerId, xPlayer)
-	print(playerId, xPlayer.variables.phoneNumber)
-	local phoneNumber = xPlayer.variables.phoneNumber or getUniquePhoneNumber(xPlayer)
-	print(phoneNumber)
+	local variables = xPlayer.variables
+	local phoneNumber = (variables and variables.phoneNumber or xPlayer.get('phoneNumber')) or getUniquePhoneNumber(xPlayer)
 
 	TriggerEvent('npwd:newPlayer', {
 		source = playerId,
 		identifier = xPlayer.identifier,
 		phoneNumber = phoneNumber,
-		firstname = xPlayer.variables.firstName,
-		lastname = xPlayer.variables.lastName
+		firstname = variables and variables.firstName or xPlayer.get('firstName'),
+		lastname = variables and variables.lastName or xPlayer.get('lastName')
 	})
 end)
 
@@ -40,18 +39,33 @@ AddEventHandler('onResourceStart', function(resource)
 	if resource == 'npwd' then
 		local xPlayers = ESX.GetPlayers()
 		if next(xPlayers) then
+			-- Check for ESX Legacy
 			local legacy = type(xPlayers[1]) == 'table'
-			for i=1, #xPlayers do
-				local xPlayer = legacy and xPlayers[i] or ESX.GetPlayerFromId(xPlayers[i])
-				print(xPlayer.source, xPlayer.variables.firstName, xPlayer.variables.phoneNumber)
 
-				TriggerEvent('npwd:newPlayer', {
-					source = xPlayer.source,
-					identifier = xPlayer.identifier,
-					phoneNumber = xPlayer.variables.phoneNumber,
-					firstname = xPlayer.variables.firstName,
-					lastname = xPlayer.variables.lastName
-				})
+			for i=1, #xPlayers do
+				-- Fallback to `GetPlayerFromId` if playerdata was not already returned
+				local xPlayer = legacy and xPlayers[i] or ESX.GetPlayerFromId(xPlayers[i])
+				local variables = xPlayer.variables
+
+				if variables then
+					-- Support for ESX 1.2+
+					TriggerEvent('npwd:newPlayer', {
+						source = xPlayer.source,
+						identifier = xPlayer.identifier,
+						phoneNumber = variables.phoneNumber,
+						firstname = variables.firstName,
+						lastname = variables.lastName
+					})
+				else
+					-- Support for ESX 1.1 with essentialmode
+					TriggerEvent('npwd:newPlayer', {
+						source = xPlayer.source,
+						identifier = xPlayer.identifier,
+						phoneNumber = xPlayer.get('phoneNumber'),
+						firstname = xPlayer.get('firstName'),
+						lastname = xPlayer.get('lastName')
+					})
+				end
 			end
 		end
 	end
