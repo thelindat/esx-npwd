@@ -6,16 +6,16 @@ ESX = {
 }
 
 local function getUniquePhoneNumber(identifier)
-    local phoneNumber = exports.npwd:generatePhoneNumber()
+	local phoneNumber = exports.npwd:generatePhoneNumber()
 	exports.oxmysql:update('UPDATE users SET phone_number = ? WHERE identifier = ?', { phoneNumber, identifier })
 	return phoneNumber
 end
 
 local rawget = rawget
 local variable_mt = {
-    __index = function(self, key)
-        return rawget(self, get) and self.get(key)
-    end
+	__index = function(self, key)
+		return rawget(self, get) and self.get(key)
+	end
 }
 
 AddEventHandler('esx:playerLoaded', function(playerId, xPlayer)
@@ -40,7 +40,7 @@ local legacy
 
 AddEventHandler('onServerResourceStart', function(resource)
 	if resource == 'npwd' then
-        Wait(100)
+		Wait(100)
 		local xPlayers = ESX.GetPlayers()
 		if next(xPlayers) then
 			-- Check for ESX Legacy
@@ -51,13 +51,13 @@ AddEventHandler('onServerResourceStart', function(resource)
 				local xPlayer = legacy and xPlayers[i] or ESX.GetPlayerFromId(xPlayers[i])
 				local variables = xPlayer.variables or setmetatable(xPlayer, variable_mt)
 
-                exports.npwd:newPlayer({
-                    source = xPlayer.source,
-                    identifier = xPlayer.identifier,
-                    phoneNumber = variables.phoneNumber,
-                    firstname = variables.firstName,
-                    lastname = variables.lastName
-                })
+				exports.npwd:newPlayer({
+					source = xPlayer.source,
+					identifier = xPlayer.identifier,
+					phoneNumber = variables.phoneNumber,
+					firstname = variables.firstName,
+					lastname = variables.lastName
+				})
 			end
 		end
 	end
