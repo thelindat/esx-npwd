@@ -7,5 +7,6 @@ use_fxv2_oal 'yes'
 lua54 'yes'
 
 server_scripts {
+  '@mysql-async/lib/MySQL.lua',
   'server.lua'
 }

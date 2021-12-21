@@ -7,7 +7,7 @@ ESX = {
 
 local function getUniquePhoneNumber(identifier)
 	local phoneNumber = exports.npwd:generatePhoneNumber()
-	exports.oxmysql:update('UPDATE users SET phone_number = ? WHERE identifier = ?', { phoneNumber, identifier })
+	MySQL.Async.execute('UPDATE users SET phone_number = ? WHERE identifier = ?', { phoneNumber, identifier })
 	return phoneNumber
 end
 
