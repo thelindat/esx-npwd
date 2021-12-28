@@ -19,8 +19,11 @@ local variable_mt = {
 }
 
 AddEventHandler('esx:playerLoaded', function(playerId, xPlayer)
-	local variables = xPlayer.variables or setmetatable(xPlayer, variable_mt)
+	if not xPlayer then
+		xPlayer = ESX.GetPlayerFromId(playerId)
+	end
 
+	local variables = xPlayer.variables or setmetatable(xPlayer, variable_mt)
 	local phoneNumber = variables.phoneNumber or getUniquePhoneNumber(xPlayer.identifier)
 
 	exports.npwd:newPlayer({
