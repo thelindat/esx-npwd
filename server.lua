@@ -39,19 +39,17 @@ AddEventHandler('esx:playerLogout', function(playerId)
 	exports.npwd:unloadPlayer(playerId)
 end)
 
-local legacy
-
 AddEventHandler('onServerResourceStart', function(resource)
 	if resource == 'npwd' then
-		Wait(100)
 		local xPlayers = ESX.GetPlayers()
+
 		if next(xPlayers) then
-			-- Check for ESX Legacy
-			if not legacy then legacy = type(xPlayers[1]) == 'table' end
+			Wait(100)
+			local isTable = type(xPlayers[1]) == 'table'
 
 			for i=1, #xPlayers do
 				-- Fallback to `GetPlayerFromId` if playerdata was not already returned
-				local xPlayer = legacy and xPlayers[i] or ESX.GetPlayerFromId(xPlayers[i])
+				local xPlayer = isTable and xPlayers[i] or ESX.GetPlayerFromId(xPlayers[i])
 				local variables = xPlayer.variables or setmetatable(xPlayer, variable_mt)
 
 				exports.npwd:newPlayer({
