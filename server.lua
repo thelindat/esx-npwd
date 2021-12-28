@@ -33,7 +33,7 @@ AddEventHandler('esx:playerLoaded', function(playerId, xPlayer)
 end)
 
 AddEventHandler('esx:playerLogout', function(playerId)
-	exports.npwd:unloadPlayer, playerId)
+	exports.npwd:unloadPlayer(playerId)
 end)
 
 local legacy
