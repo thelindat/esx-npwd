@@ -7,5 +7,3 @@ Setup event handlers and export calls to create the player instance within NPWD 
 - Tested with ESX Legacy
 - Should work with ESX v1 Final and v1.2
 - Completely untested with ESX v1.1 (can't wait)
-
-Like NPWD, this resource is still a work-in-progress and may require alterations to improve support. Currently, you will need to build NPWD yourself from the `develop` branch (the pre-release will _not_ work).
