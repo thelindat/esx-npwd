@@ -1,16 +1,21 @@
-local ESX = exports['es_extended']:getSharedObject()
+local function getESX()
+	local ESX = exports['es_extended']:getSharedObject()
 
-ESX = {
-	GetPlayers = ESX.GetExtendedPlayers or ESX.GetPlayers,
-	GetPlayerFromId = ESX.GetPlayerFromId
-}
+	return {
+		GetPlayers = ESX.GetExtendedPlayers or ESX.GetPlayers,
+		GetPlayerFromId = ESX.GetPlayerFromId
+	}
+end
+
+local ESX = getESX()
+local npwd = exports.npwd
 
 AddEventHandler('esx:playerLoaded', function(playerId, xPlayer)
 	if not xPlayer then
 		xPlayer = ESX.GetPlayerFromId(playerId)
 	end
 
-	exports.npwd:newPlayer({
+	npwd:newPlayer({
 		source = playerId,
 		identifier = xPlayer.identifier,
 		firstname = xPlayer.firstName or xPlayer.variables?.firstName or xPlayer.get('firstName'),
@@ -19,11 +24,13 @@ AddEventHandler('esx:playerLoaded', function(playerId, xPlayer)
 end)
 
 AddEventHandler('esx:playerLogout', function(playerId)
-	exports.npwd:unloadPlayer(playerId)
+	npwd:unloadPlayer(playerId)
 end)
 
 AddEventHandler('onServerResourceStart', function(resource)
-	if resource == 'npwd' then
+	if resource == 'es_extended' then
+		ESX = getESX()
+	elseif resource == 'npwd' then
 		local xPlayers = ESX.GetPlayers()
 
 		if next(xPlayers) then
@@ -34,7 +41,7 @@ AddEventHandler('onServerResourceStart', function(resource)
 				-- Fallback to `GetPlayerFromId` if playerdata was not already returned
 				local xPlayer = isTable and xPlayers[i] or ESX.GetPlayerFromId(xPlayers[i])
 
-				exports.npwd:newPlayer({
+				npwd:newPlayer({
 					source = xPlayer.source,
 					identifier = xPlayer.identifier,
 					firstname = xPlayer.firstName or xPlayer.variables?.firstName or xPlayer.get('firstName'),
