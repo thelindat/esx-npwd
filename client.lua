@@ -47,7 +47,7 @@ else
 end
 
 RegisterNetEvent('esx:playerLoaded', function()
-	if ESX.SearchInventory('phone') > 0 then
+	if ESX.SearchInventory('phone', true) > 0 then
 		npwd:setPhoneDisabled(false)
 	end
 end)
